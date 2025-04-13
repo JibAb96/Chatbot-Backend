@@ -7,6 +7,8 @@ import { APP_PIPE } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from "./user/user.module";
 import { ChatModule } from './chat/chat.module';
+import { SupabaseModule } from './supabase/supabase.module';
+import { AuthModule } from './auth/auth.module';
 const cookieSession = require('cookie-session');
 @Module({
   imports: [
@@ -27,7 +29,7 @@ const cookieSession = require('cookie-session');
     }),
     
     UserModule, 
-    ChatModule,
+    ChatModule, SupabaseModule, AuthModule,
   ],
   controllers: [AppController],
   providers: [
