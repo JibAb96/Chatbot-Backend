@@ -1,35 +1,20 @@
-import { MiddlewareConsumer, Module, ValidationPipe } from '@nestjs/common';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './user/user.entity';
 import { APP_PIPE } from '@nestjs/core';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UserModule } from "./user/user.module";
+import { ConfigModule } from '@nestjs/config';
 import { ChatModule } from './chat/chat.module';
 import { SupabaseModule } from './supabase/supabase.module';
 import { AuthModule } from './auth/auth.module';
-const cookieSession = require('cookie-session');
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: `.env.development`,
+      envFilePath: `.env`,
     }),
-    TypeOrmModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory(config: ConfigService) {
-        return {
-          type: 'sqlite',
-          database: config.get<string>('DB_NAME'),
-          synchronize: true,
-          entities: [User],
-        };
-      },
-    }),
-    
-    UserModule, 
-    ChatModule, SupabaseModule, AuthModule,
+    ChatModule,
+    SupabaseModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
@@ -42,14 +27,4 @@ const cookieSession = require('cookie-session');
     },
   ],
 })
-export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(
-        cookieSession({
-          keys: ['lkdjnls'],
-        }),
-      )
-      .forRoutes('*');
-  }
-}
+export class AppModule {}
