@@ -2,6 +2,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from "@nestjs/config";
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
+
 @Injectable()
 export class SupabaseService implements OnModuleInit {
   private supabaseClient: SupabaseClient;
@@ -11,15 +12,22 @@ export class SupabaseService implements OnModuleInit {
   onModuleInit() {
     this.supabaseClient = createClient(
       this.configService.get<string>('SUPABASE_URL') || '',
-      this.configService.get<string>('SUPABASE_SERVICE_KEY') || '',
+      this.configService.get<string>('SUPABASE_KEY') || '',
       {
         auth: {
           persistSession: false,
         },
+        db: {
+          schema: "public",
+
+        }
       },
     );
   }
   get client(): SupabaseClient {
+   
     return this.supabaseClient;
   }
+
+
 }
