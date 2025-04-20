@@ -1,0 +1,38 @@
+### Create a new user
+POST http://localhost:3001/auth/register
+Content-Type: application/json
+
+{
+    "email": "jibousual@gmail.com",
+    "password": "Testing123",
+    "username": "working"
+}
+
+### Log in user
+POST http://localhost:3001/auth/login
+Content-Type: application/json
+
+{
+    "email": "jibousual@gmail.com",
+    "password": "BrandNew123"
+}
+
+
+### Delete user with given id
+DELETE http://localhost:3001/auth/2134
+
+### Update a user auth
+PATCH  http://localhost:3001/auth/update-auth/2
+Content-Type: application/json
+
+{
+    "password": "Comeon123"
+}
+
+### Update a username
+PATCH  http://localhost:3001/auth/update-user/2
+Content-Type: application/json
+
+{
+    "username": "updateworking"
+}
