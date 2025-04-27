@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AuthRepository } from './auth.repository';
 import { RegisterAuthDto } from './dtos/register-auth.dto';
 import { UpdateAuthDto } from './dtos/update-auth.dto';
-import { SignInAuthDto } from './dtos/login-auth.dto';
+import { LogInAuthDto } from './dtos/login-auth.dto';
 import { UpdateAuthUserResponse } from './interfaces/update-authuser-responser.interface';
 import { AuthResponse } from './interfaces/auth-response.interface';
 
@@ -18,7 +18,7 @@ export class AuthService {
     return authData;
   }
 
-  async login(authDto: SignInAuthDto): Promise<AuthResponse> {
+  async login(authDto: LogInAuthDto): Promise<AuthResponse> {
     const authData = await this.authRepository.login(
       authDto.email,
       authDto.password,

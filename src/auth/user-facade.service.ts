@@ -12,14 +12,14 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.services';
 import { AuthService } from './auth.service';
-import { SignInAuthDto } from './dtos/login-auth.dto';
+import { LogInAuthDto } from './dtos/login-auth.dto';
 import { UpdateAuthDto } from './dtos/update-auth.dto';
 import { AuthResponse } from './interfaces/auth-response.interface';
 import { RegisterDto } from './dtos/registration.dto';
-import { ApiDataAuthInterface } from './interfaces/api-authdata.interface';
-import { ApiUserDataInterface } from './interfaces/api-userdata.interface';
+import { AuthDataDto } from './dtos/authdata.dto';
+import { UserDataDto } from './dtos/userdata.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
-import { UserResponse } from './interfaces/user-response.interface';
+import { UserResponseDto } from './dtos/user-response.dto';
 
 @Injectable()
 export class UserFacadeService {
@@ -29,7 +29,7 @@ export class UserFacadeService {
   ) {}
   private readonly logger = new Logger(UserFacadeService.name);
 
-  async register(body: RegisterDto): Promise<ApiDataAuthInterface> {
+  async register(body: RegisterDto): Promise<AuthDataDto> {
     let authData: AuthResponse | null = null;
     let profileCreated = false;
 
@@ -79,7 +79,7 @@ export class UserFacadeService {
     }
   }
 
-  async login(authDto: SignInAuthDto): Promise<ApiDataAuthInterface> {
+  async login(authDto: LogInAuthDto): Promise<AuthDataDto> {
     const authData = await this.authService.login({
       email: authDto.email,
       password: authDto.password,
@@ -118,27 +118,26 @@ export class UserFacadeService {
     userId: string,
     updateData: UpdateAuthDto,
     requestUser: any,
-  ): Promise<ApiUserDataInterface> {
+  ): Promise<UserDataDto> {
     try {
       this.ensureSameUser(userId, requestUser);
       const updatedUser = await this.authService.update(updateData);
-        try {
-          const findUser = await this.usersService.findOneById(updatedUser.id);
-          return {
-            id: updatedUser.id,
-            username: findUser.username,
-            email: updateData.email,
-          };
-        } catch (error) {
-          this.logger.error(
-            `Updated auth table successfully but finding user failed: ${error.message}`,
-            error.stack,
-          );
-          if (error instanceof NotFoundException) {
-            throw error;
-          }
+      try {
+        const findUser = await this.usersService.findOneById(updatedUser.id);
+        return {
+          id: updatedUser.id,
+          username: findUser.username,
+          email: updateData.email,
+        };
+      } catch (error) {
+        this.logger.error(
+          `Updated auth table successfully but finding user failed: ${error.message}`,
+          error.stack,
+        );
+        if (error instanceof NotFoundException) {
+          throw error;
         }
-      
+      }
     } catch (error) {
       this.logger.error(`Updating user failed: ${error.message}`, error.stack);
       if (
@@ -161,7 +160,7 @@ export class UserFacadeService {
     userId: string,
     updateData: UpdateUserDto,
     requestUser: any,
-  ): Promise<UserResponse> {
+  ): Promise<UserResponseDto> {
     this.ensureSameUser(userId, requestUser);
     const update = this.usersService.update(userId, updateData);
     return update;
