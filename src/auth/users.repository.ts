@@ -5,16 +5,16 @@ import {
 } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
 import { PostgrestError } from '@supabase/supabase-js';
-import { UserResponse } from './interfaces/user-response.interface';
+import { UserResponseDto } from './dtos/user-response.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
-import { CreateUserInterface } from "./interfaces/create-user.interface";
+import { CreateUserInterface } from './interfaces/create-user.interface';
 
 @Injectable()
 export class UsersRepository {
   constructor(private supabaseService: SupabaseService) {}
   private readonly logger = new Logger(UsersRepository.name);
 
-  async findOneById(id: string): Promise<UserResponse> {
+  async findOneById(id: string): Promise<UserResponseDto> {
     const { data, error } = await this.supabaseService.client
       .from('user_profile')
       .select('*')
@@ -30,10 +30,10 @@ export class UsersRepository {
         'There was an internal server error finding user',
       );
     }
-    return data
+    return data;
   }
 
-  async findOneByEmail(email: string): Promise<UserResponse> {
+  async findOneByEmail(email: string): Promise<UserResponseDto> {
     const { data, error } = await this.supabaseService.client
       .from('user_profile')
       .select('*')
@@ -69,7 +69,7 @@ export class UsersRepository {
           'There was an internal server error creating user',
         );
       }
-      return data.username
+      return data.username;
     } catch (error) {
       this.logger.error(`Unable to create user: ${error.message}`, error.stack);
       throw new InternalServerErrorException(
@@ -92,7 +92,7 @@ export class UsersRepository {
         'There was an internal server error updating user',
       );
     }
-    return data
+    return data;
   }
 
   async delete(id: string): Promise<boolean> {
