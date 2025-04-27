@@ -5,8 +5,9 @@ import {
 } from '@nestjs/common';
 
 import { UsersRepository } from './users.repository';
-import { UpdateUserDto } from "./dtos/update-user.dto";
-import { CreateUserInterface } from "./interfaces/create-user.interface";
+import { UpdateUserDto } from './dtos/update-user.dto';
+import { CreateUserInterface } from './interfaces/create-user.interface';
+import { UserResponseDto } from './dtos/user-response.dto';
 
 @Injectable()
 export class UsersService {
@@ -23,16 +24,16 @@ export class UsersService {
 
   async create(data: CreateUserInterface): Promise<string> {
     const userData = await this.userRepository.create(data);
-    return userData
+    return userData;
   }
 
-  async update(id: string, userData: UpdateUserDto): Promise<any> {
+  async update(id: string, userData: UpdateUserDto): Promise<UserResponseDto> {
     const findUser = await this.userRepository.findOneById(id);
     if (!findUser) {
       throw new NotFoundException('User to be updated does not exist');
     }
     const updatedUser = await this.userRepository.update(id, userData);
-    return updatedUser.user.username;
+    return { username: updatedUser.user.username };
   }
 
   async delete(id: string): Promise<boolean> {
